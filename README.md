@@ -1,3 +1,7 @@
+🌐 Live Documentation  
+https://techdirectconfig.ernerlin.com
+
+
 # Dell-TechDirect-Configuration-guide
 A practical, end-to-end implementation guide for configuring Dell TechDirect and deploying SupportAssist Enterprise at scale using Microsoft Intune. This repository documents the full deployment workflow, prerequisites, architecture considerations, and operational lessons learned from real-world enterprise environments.  Designed for Endpoint, Modern Workplace, and Infrastructure Engineers looking to automate firmware updates, improve device health visibility, and standardise Dell fleet management through Intune.
 

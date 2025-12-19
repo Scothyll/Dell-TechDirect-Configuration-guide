@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dell SupportAssist Enterprise Deployment Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dell-blue: #0076CE;
+            --dell-dark: #1A1A2E;
+            --dell-gray: #6B7280;
+            --dell-light: #F8FAFC;
+            --dell-border: #E2E8F0;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --info: #3B82F6;
+            --code-bg: #1E293B;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            color: var(--dell-dark);
+            background: var(--dell-light);
+            overflow-x: hidden;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--dell-blue);
+            z-index: 1000;
+            transition: width 0.1s ease-out;
+        }
+
+        /* Header */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid var(--dell-border);
+            padding: 3rem 2rem;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dell-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--dell-blue);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .header-badge {
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--dell-blue);
+            background: #EBF5FF;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--dell-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            font-size: 1.125rem;
+            color: var(--dell-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-info {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 0.875rem;
+            color: var(--dell-gray);
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--dell-border);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-item svg {
+            opacity: 0.6;
+        }
+
+        /* Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 2rem;
+            padding: 2rem;
+            width: 100%;
+            box-sizing: border-box;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar / TOC */
+        .sidebar {
+            position: sticky;
+            top: 1rem;
+            height: fit-content;
+            max-height: calc(100vh - 2rem);
+            overflow-y: auto;
+            align-self: start;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--dell-border);
+            border-radius: 2px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--dell-gray);
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: static;
+                max-height: none;
+                overflow-y: visible;
+            }
+        }
+
+        .toc {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .toc h2 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--dell-gray);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--dell-border);
+        }
+
+        .toc ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .toc ul ul {
+            padding-left: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        .toc li {
+            margin: 0.25rem 0;
+        }
+
+        .toc a {
+            display: block;
+            padding: 0.375rem 0.75rem;
+            color: var(--dell-gray);
+            text-decoration: none;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .toc a:hover {
+            background: var(--dell-light);
+            color: var(--dell-blue);
+        }
+
+        .toc a.active {
+            background: var(--dell-blue);
+            color: white;
+        }
+
+        /* Main content */
+        .main-content {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            min-width: 0;
+            overflow-wrap: break-word;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--dell-border);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        h1, h2, h3 {
+            color: var(--dell-dark);
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .section h1 {
+            font-size: 2rem;
+            color: var(--dell-blue);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 3px solid var(--dell-blue);
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--dell-dark);
+        }
+
+        .section h3 {
+            font-size: 1.125rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        strong {
+            font-weight: 600;
+            color: var(--dell-dark);
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin: 0.5rem 0;
+            color: #374151;
+        }
+
+        li strong {
+            color: var(--dell-dark);
+        }
+
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            max-width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th {
+            background: var(--dell-blue);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 0.875rem 1rem;
+        }
+
+        th:first-child {
+            border-top-left-radius: 8px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 8px;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--dell-border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:last-child td:first-child {
+            border-bottom-left-radius: 8px;
+        }
+
+        tr:last-child td:last-child {
+            border-bottom-right-radius: 8px;
+        }
+
+        tr:nth-child(even) td {
+            background: var(--dell-light);
+        }
+
+        tr:hover td {
+            background: #EBF5FF;
+        }
+
+        /* Code */
+        .code-wrapper {
+            position: relative;
+            margin: 1.5rem 0;
+        }
+
+        .code-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #334155;
+            color: #94A3B8;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 0.25rem 0.75rem;
+            border-radius: 8px 0 8px 0;
+            font-family: 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #334155;
+            color: #94A3B8;
+            border: none;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #475569;
+            color: white;
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            color: white;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: #E2E8F0;
+            padding: 2.5rem 1.25rem 1.25rem 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            max-width: 100%;
+        }
+
+        /* Step badges */
+        .section h2 {
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--dell-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2rem;
+            height: 2rem;
+            background: var(--dell-blue);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* Part dividers */
+        .part-section {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 3px solid var(--dell-blue);
+        }
+
+        .part-section:first-of-type {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875em;
+            background: #F1F5F9;
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+            color: #DC2626;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        /* Screenshots */
+        .screenshot {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .screenshot img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--dell-border);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .screenshot img:hover {
+            transform: scale(1.01);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .screenshot figcaption {
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--dell-gray);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .lightbox-close:hover {
+            opacity: 1;
+        }
+
+        /* Section navigation */
+        .section-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--dell-border);
+            font-size: 0.875rem;
+        }
+
+        .section-nav a {
+            color: var(--dell-blue);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-nav a:hover {
+            text-decoration: underline;
+        }
+
+        .section-nav .prev::before {
+            content: '←';
+        }
+
+        .section-nav .next::after {
+            content: '→';
+        }
+
+        /* Callouts */
+        .callout {
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border-left: 4px solid;
+        }
+
+        .callout p {
+            margin: 0;
+        }
+
+        .callout.note {
+            background: #FEF3C7;
+            border-color: var(--warning);
+        }
+
+        .callout.warning {
+            background: #FEE2E2;
+            border-color: var(--error);
+        }
+
+        .callout.success {
+            background: #D1FAE5;
+            border-color: var(--success);
+        }
+
+        .callout.info {
+            background: #DBEAFE;
+            border-color: var(--info);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--dell-gray);
+            font-size: 0.875rem;
+        }
+
+        /* Scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background: var(--dell-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: #004B8D;
+            transform: translateY(-2px);
+        }
+
+        /* Print styles */
+        @media print {
+            .sidebar, .scroll-top {
+                display: none;
+            }
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" aria-label="Close">&times;</button>
+        <img src="" alt="">
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <div class="header-top">
+                <div class="dell-logo">D</div>
+                <span class="header-badge">Technical Documentation</span>
+            </div>
+            <h1>Dell SupportAssist Enterprise Deployment Guide</h1>
+            <p class="subtitle">Implementation Plan and Step-by-Step Deployment Guide via Microsoft Intune</p>
+            <div class="meta-info">
+                <span class="meta-item">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.857C1 3.384 1.448 3 2 3h12c.552 0 1 .384 1 .857v10.286c0 .473-.448.857-1 .857H2c-.552 0-1-.384-1-.857V3.857z"/>
+                        <path d="M6.5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-9 3a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm3 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                    </svg>
+                    Version 1.0
+                </span>
+                <span class="meta-item">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2z"/>
+                    </svg>
+                    December 2025
+                </span>
+                <span class="meta-item">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                    </svg>
+                    Ugochukwu Ibeawuchi
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside class="sidebar">
+            <nav class="toc" id="toc">
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#1-project-overview">1. Project Overview</a></li>
+<ul>
+<li><a href="#1-1-background">1.1 Background</a></li>
+<li><a href="#1-2-the-problem">1.2 The Problem</a></li>
+<li><a href="#1-3-the-solution">1.3 The Solution</a></li>
+<li><a href="#1-4-key-features-deployed">1.4 Key Features Deployed</a></li>
+</ul>
+<li><a href="#2-objectives">2. Objectives</a></li>
+<ul>
+<li><a href="#2-1-primary-objectives">2.1 Primary Objectives</a></li>
+<li><a href="#2-2-success-criteria">2.2 Success Criteria</a></li>
+</ul>
+<li><a href="#3-architecture-design">3. Architecture &amp; Design</a></li>
+<ul>
+<li><a href="#3-1-deployment-workflow">3.1 Deployment Workflow</a></li>
+<li><a href="#3-2-component-dependencies">3.2 Component Dependencies</a></li>
+</ul>
+<li><a href="#4-prerequisites">4. Prerequisites</a></li>
+<ul>
+<li><a href="#4-1-administrative-requirements">4.1 Administrative Requirements</a></li>
+<li><a href="#4-2-technical-requirements">4.2 Technical Requirements</a></li>
+</ul>
+<li><a href="#5-tools-technologies">5. Tools &amp; Technologies</a></li>
+<li><a href="#6-part-a-creating-the-deployment-package">6. Part A: Creating the Deployment Package</a></li>
+<ul>
+<li><a href="#step-1-download-activation-file-from-techdirect">Step 1: Download Activation File from TechDirect</a></li>
+<li><a href="#step-2-launch-deployment-package-manager-welcome">Step 2: Launch Deployment Package Manager - Welcome</a></li>
+<li><a href="#step-3-activation-import-activation-file">Step 3: Activation - Import Activation File</a></li>
+<li><a href="#step-4-activation-successful-validation">Step 4: Activation - Successful Validation</a></li>
+<li><a href="#step-5-software-add-ons-central-resource-manager">Step 5: Software Add-ons - Central Resource Manager</a></li>
+<ul>
+<li><a href="#central-resource-manager-4-9-0-40923">Central Resource Manager 4.9.0.40923</a></li>
+</ul>
+<li><a href="#step-6-configure-central-resource-manager-if-selected">Step 6: Configure Central Resource Manager (If Selected)</a></li>
+<li><a href="#step-7-proxy-configuration-optional">Step 7: Proxy Configuration (Optional)</a></li>
+<li><a href="#step-8-output-select-file-format">Step 8: Output - Select File Format</a></li>
+<li><a href="#step-9-output-select-save-location">Step 9: Output - Select Save Location</a></li>
+<li><a href="#step-10-package-generation-progress">Step 10: Package Generation Progress</a></li>
+<li><a href="#step-11-summary-package-generated">Step 11: Summary - Package Generated</a></li>
+<li><a href="#step-12-verify-generated-package-contents">Step 12: Verify Generated Package Contents</a></li>
+</ul>
+<li><a href="#7-part-b-deploy-net-8-0-runtime-standalone">7. Part B: Deploy .NET 8.0 Runtime (Standalone)</a></li>
+<ul>
+<li><a href="#step-13-prepare-net-8-0-source-files">Step 13: Prepare .NET 8.0 Source Files</a></li>
+<li><a href="#step-14-package-net-8-0-for-intune">Step 14: Package .NET 8.0 for Intune</a></li>
+<li><a href="#step-15-upload-net-8-0-to-intune">Step 15: Upload .NET 8.0 to Intune</a></li>
+<li><a href="#step-16-configure-net-8-0-app-information">Step 16: Configure .NET 8.0 App Information</a></li>
+<li><a href="#step-17-configure-net-8-0-program-settings">Step 17: Configure .NET 8.0 Program Settings</a></li>
+<li><a href="#step-18-configure-net-8-0-requirements">Step 18: Configure .NET 8.0 Requirements</a></li>
+<li><a href="#step-19-configure-net-8-0-detection-rules">Step 19: Configure .NET 8.0 Detection Rules</a></li>
+<li><a href="#step-20-configure-net-8-0-assignments">Step 20: Configure .NET 8.0 Assignments</a></li>
+<li><a href="#step-21-verify-net-8-0-deployment">Step 21: Verify .NET 8.0 Deployment</a></li>
+</ul>
+<li><a href="#8-part-c-prepare-supportassist-files-for-intune">8. Part C: Prepare SupportAssist Files for Intune</a></li>
+<ul>
+<li><a href="#step-22-create-working-directory">Step 22: Create Working Directory</a></li>
+<li><a href="#step-23-copy-required-files">Step 23: Copy Required Files</a></li>
+<li><a href="#step-24-download-intunewinapputil">Step 24: Download IntuneWinAppUtil</a></li>
+<li><a href="#step-25-create-intunewin-package">Step 25: Create .intunewin Package</a></li>
+</ul>
+<li><a href="#9-part-d-configure-supportassist-in-microsoft-intune">9. Part D: Configure SupportAssist in Microsoft Intune</a></li>
+<ul>
+<li><a href="#step-26-access-intune-admin-center">Step 26: Access Intune Admin Center</a></li>
+<li><a href="#step-27-navigate-to-apps">Step 27: Navigate to Apps</a></li>
+<li><a href="#step-28-select-app-type">Step 28: Select App Type</a></li>
+<li><a href="#step-29-upload-application-package">Step 29: Upload Application Package</a></li>
+<li><a href="#step-30-configure-app-information">Step 30: Configure App Information</a></li>
+<li><a href="#step-31-configure-program-settings-critical">Step 31: Configure Program Settings (CRITICAL)</a></li>
+<ul>
+<li><a href="#install-command">Install Command:</a></li>
+<li><a href="#uninstall-command">Uninstall Command:</a></li>
+</ul>
+<li><a href="#step-32-configure-requirements">Step 32: Configure Requirements</a></li>
+<ul>
+<li><a href="#custom-requirement-dell-devices-only">Custom Requirement - Dell Devices Only:</a></li>
+</ul>
+<li><a href="#step-33-configure-detection-rules">Step 33: Configure Detection Rules</a></li>
+<li><a href="#step-34-configure-dependencies">Step 34: Configure Dependencies</a></li>
+<li><a href="#step-35-configure-supersedence-optional">Step 35: Configure Supersedence (Optional)</a></li>
+<li><a href="#step-36-configure-assignments">Step 36: Configure Assignments</a></li>
+<li><a href="#step-37-review-and-create">Step 37: Review and Create</a></li>
+<li><a href="#step-38-monitor-deployment">Step 38: Monitor Deployment</a></li>
+<li><a href="#step-24-configure-assignments">Step 24: Configure Assignments</a></li>
+</ul>
+<li><a href="#9-security-governance">9. Security &amp; Governance</a></li>
+<ul>
+<li><a href="#9-1-data-protection">9.1 Data Protection</a></li>
+</ul>
+<li><a href="#10-testing-validation">10. Testing &amp; Validation</a></li>
+<ul>
+<li><a href="#verification-commands">Verification Commands</a></li>
+<li><a href="#validation-checklist">Validation Checklist</a></li>
+</ul>
+<li><a href="#11-troubleshooting">11. Troubleshooting</a></li>
+<ul>
+<li><a href="#common-issues">Common Issues</a></li>
+<li><a href="#log-locations">Log Locations</a></li>
+</ul>
+<li><a href="#12-quick-reference">12. Quick Reference</a></li>
+<ul>
+<li><a href="#install-command-reference">Install Command</a></li>
+<li><a href="#deployment-checklist">Deployment Checklist</a></li>
+<li><a href="#screenshot-reference">Screenshot Reference</a></li>
+<ul>
+<li><a href="#part-a-dell-deployment-package-manager">Part A: Dell Deployment Package Manager</a></li>
+<li><a href="#part-b-net-8-0-deployment">Part B: .NET 8.0 Deployment</a></li>
+<li><a href="#part-c-d-supportassist-intune-deployment">Part C &amp; D: SupportAssist Intune Deployment</a></li>
+</ul>
+</ul>
+</ul>
+</nav>
+        </aside>
+
+        <main class="main-content">
+            
+<section id="1-project-overview" class="section level-1">
+<h1>1. Project Overview</h1>
+
+</section>
+
+<section id="1-1-background" class="section level-2">
+<h2>1.1 Background</h2>
+<p>Managing hardware health, diagnostics, and support for a fleet of Dell business computers presents significant operational challenges. Without a centralized solution, IT teams must manually address hardware issues, resulting in increased downtime, reactive support workflows, and reduced productivity across the organization.</p>
+</section>
+
+<section id="1-2-the-problem" class="section level-2">
+<h2>1.2 The Problem</h2>
+<ul>
+<li>Reactive Support Model: Hardware issues discovered only after failures occur</li>
+<li>Manual Diagnostics: IT staff must physically access devices to run diagnostics</li>
+<li>Inconsistent Coverage: Support agents not installed uniformly across devices</li>
+<li>Limited Visibility: No centralized dashboard to monitor fleet health</li>
+<li>Support Overhead: High volume of manual support tickets</li>
+</ul>
+</section>
+
+<section id="1-3-the-solution" class="section level-2">
+<h2>1.3 The Solution</h2>
+<p>This project implements an automated, enterprise-wide deployment of Dell SupportAssist for Business PCs using <strong>Microsoft Intune</strong> as the deployment platform.</p>
+</section>
+
+<section id="1-4-key-features-deployed" class="section level-2">
+<h2>1.4 Key Features Deployed</h2>
+<table>
+<tr><th>Feature</th><th>Description</th><th>Benefit</th></tr><tr><td>Hardware Diagnostics</td><td>Comprehensive hardware testing</td><td>Early failure detection</td></tr><tr><td>Predictive Analytics</td><td>AI-driven failure prediction</td><td>Prevent downtime</td></tr><tr><td>Remote Assistance</td><td>Secure remote support</td><td>Faster resolution</td></tr><tr><td>Automated Updates</td><td>Driver/firmware management</td><td>Consistent performance</td></tr>
+</table>
+</section>
+
+<section id="2-objectives" class="section level-1">
+<h1>2. Objectives</h1>
+
+</section>
+
+<section id="2-1-primary-objectives" class="section level-2">
+<h2>2.1 Primary Objectives</h2>
+<ol>
+<li>Deploy Dell SupportAssist to 100% of Dell business devices</li>
+<li>Eliminate manual installation through Intune Win32 app packaging</li>
+<li>Ensure proper dependency management with .NET 8.0 Runtime</li>
+<li>Enable proactive hardware monitoring across the fleet</li>
+<li>Integrate with Dell TechDirect for centralized management</li>
+</ol>
+</section>
+
+<section id="2-2-success-criteria" class="section level-2">
+<h2>2.2 Success Criteria</h2>
+<table>
+<tr><th>Metric</th><th>Target</th><th>Measurement</th></tr><tr><td>Deployment Success Rate</td><td>≥ 95%</td><td>Intune status reports</td></tr><tr><td>Dell Device Coverage</td><td>100%</td><td>TechDirect device count</td></tr><tr><td>Installation Failures</td><td></td><td>Intune failure reports</td></tr><tr><td>Service Running State</td><td>100%</td><td>Detection script</td></tr>
+</table>
+</section>
+
+<section id="3-architecture-design" class="section level-1">
+<h1>3. Architecture &amp; Design</h1>
+
+</section>
+
+<section id="3-1-deployment-workflow" class="section level-2">
+<h2>3.1 Deployment Workflow</h2>
+<p>Three-Part Deployment Process: <strong>PART A:</strong> Create deployment package using Dell Deployment Package Manager ↓ <strong>PART B:</strong> Prepare files and create .intunewin package ↓ <strong>PART C:</strong> Configure and deploy via Microsoft Intune</p>
+</section>
+
+<section id="3-2-component-dependencies" class="section level-2">
+<h2>3.2 Component Dependencies</h2>
+<table>
+<tr><th>Category</th><th>Component</th><th>Details</th></tr><tr><td>System Requirements</td><td>Operating System</td><td>Windows 10/11 (64-bit)</td></tr><tr><td>Hardware</td><td>Dell-manufactured device</td></tr><tr><td>Network</td><td>Internet connectivity</td></tr><tr><td>Prerequisites</td><td>.NET 8.0 Desktop Runtime</td><td>Must install before SupportAssist</td></tr><tr><td>CAB Files</td><td>BASE.cab</td><td>Base components (~18 MB)</td></tr><tr><td>CORE.cab</td><td>Core functionality (~14 MB)</td></tr><tr><td>FULL.cab</td><td>Full feature set (~148 MB)</td></tr><tr><td>HWDIAGS.cab</td><td>Hardware diagnostics (~124 MB)</td></tr><tr><td>INSIGHTS.cab</td><td>PC Insights (~18 MB)</td></tr><tr><td>RAAS.cab</td><td>Self-Healing (~19 MB)</td></tr>
+</table>
+</section>
+
+<section id="4-prerequisites" class="section level-1">
+<h1>4. Prerequisites</h1>
+
+</section>
+
+<section id="4-1-administrative-requirements" class="section level-2">
+<h2>4.1 Administrative Requirements</h2>
+<table>
+<tr><th>Requirement</th><th>Description</th></tr><tr><td>Microsoft Intune License</td><td>Active subscription with device management</td></tr><tr><td>Intune Administrator Role</td><td>Permissions to create/deploy Win32 apps</td></tr><tr><td>Dell TechDirect Account</td><td>Business account with SupportAssist access</td></tr><tr><td>TechDirect Activation File</td><td>Downloaded from TechDirect portal</td></tr>
+</table>
+</section>
+
+<section id="4-2-technical-requirements" class="section level-2">
+<h2>4.2 Technical Requirements</h2>
+<table>
+<tr><th>Component</th><th>Version</th><th>Purpose</th></tr><tr><td>Windows 10/11</td><td>1809+</td><td>Target OS</td></tr><tr><td>PowerShell</td><td>5.1+</td><td>Script execution</td></tr><tr><td>IntuneWinAppUtil</td><td>Latest</td><td>Win32 packaging</td></tr><tr><td>.NET 8.0 Runtime</td><td>8.0.x</td><td>SupportAssist dependency</td></tr>
+</table>
+</section>
+
+<section id="5-tools-technologies" class="section level-1">
+<h1>5. Tools &amp; Technologies</h1>
+<table>
+<tr><th>Technology</th><th>Purpose</th></tr><tr><td>Microsoft Intune</td><td>Enterprise endpoint management</td></tr><tr><td>Dell TechDirect</td><td>Activation file source</td></tr><tr><td>Dell Deployment Package Manager</td><td>Generate deployment package</td></tr><tr><td>IntuneWinAppUtil</td><td>Win32 Content Prep Tool</td></tr><tr><td>.NET 8.0 Runtime</td><td>Application dependency</td></tr>
+</table>
+</section>
+
+<section id="6-part-a-creating-the-deployment-package" class="section level-1">
+<h1>6. Part A: Creating the Deployment Package</h1>
+<p>Using Dell SupportAssist Deployment Package Manager</p>
+</section>
+
+<section id="step-1-download-activation-file-from-techdirect" class="section level-2">
+<h2>Step 1: Download Activation File from TechDirect</h2>
+<p>Before using the Deployment Package Manager, download an activation file:</p>
+
+<ol>
+<li>Navigate to https://techdirect.dell.com</li>
+<li>Sign in with your Dell business account</li>
+<li>Navigate to: Connect and manage → Manage PC Fleet → Setup and connect → Download → Activation File</li>
+<li>Download and save the activation file</li>
+</ol>
+</section>
+
+<section id="step-2-launch-deployment-package-manager-welcome" class="section level-2">
+<h2>Step 2: Launch Deployment Package Manager - Welcome</h2>
+<p>Open the Dell SupportAssist for Business PCs - Deployment Package Manager application.</p>
+
+<p>The Welcome screen displays the wizard navigation:</p>
+
+<ul>
+<li>Welcome</li>
+<li>Activation</li>
+<li>Deployment mode</li>
+<li>Software add-ons</li>
+<li>Proxy</li>
+<li>Output</li>
+<li>Summary</li>
+</ul>
+
+<p>Action: Click Next to proceed.</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image002.png" alt="Launch Deployment Package Manager - Welcome" loading="lazy"><figcaption>Launch Deployment Package Manager - Welcome</figcaption></figure>
+</p>
+
+
+</section>
+
+<section id="step-3-activation-import-activation-file" class="section level-2">
+<h2>Step 3: Activation - Import Activation File</h2>
+<p>On the Activation screen:</p>
+
+<ol>
+<li>Click <strong>Browse</strong> to locate your activation file</li>
+<li>Select the file downloaded from TechDirect</li>
+<li>Click Validate activation file</li>
+</ol>
+
+<p>If validation fails: "Invalid activation file. Make sure to import a valid file before trying again." Re-download the activation file from TechDirect.</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image004.png" alt="Activation - Import Activation File" loading="lazy"><figcaption>Activation - Import Activation File</figcaption></figure>
+</p>
+
+
+</section>
+
+<section id="step-4-activation-successful-validation" class="section level-2">
+<h2>Step 4: Activation - Successful Validation</h2>
+<p>Once validated, you'll see:</p>
+
+<table>
+<tr><th>Field</th><th>Example</th></tr><tr><td>Site</td><td>yourdomain.com_1</td></tr><tr><td>Activation file valid till</td><td>Jan 31, 2027</td></tr>
+</table>
+
+<p>"Activation file was successfully validated."</p>
+
+<p>Action: Click Next to proceed.</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image006.png" alt="Activation - Successful Validation" loading="lazy"><figcaption>Activation - Successful Validation</figcaption></figure>
+</p>
+
+
+</section>
+
+<section id="step-5-software-add-ons-central-resource-manager" class="section level-2">
+<h2>Step 5: Software Add-ons - Central Resource Manager</h2>
+<p>Configure optional components:</p>
+</section>
+
+<section id="central-resource-manager-4-9-0-40923" class="section level-3">
+<h3>Central Resource Manager 4.9.0.40923</h3>
+<ul>
+<li>Provides secure BIOS password storage for your PC fleet</li>
+<li>Required for automated BIOS updates via SupportAssist</li>
+<li>Compatible with x64-based systems only</li>
+</ul>
+
+<p>Options:</p>
+
+<ul>
+<li>○ I want to download</li>
+<li>○ I don't want to download</li>
+<li>○ I want to update the existing configuration</li>
+</ul>
+
+<p>Additional component: Dell Trusted Device 7.1.4 (optional)</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image008.png" alt="Software Add-ons - Central Resource Manager" loading="lazy"><figcaption>Software Add-ons - Central Resource Manager</figcaption></figure>
+</p>
+</section>
+
+<section id="step-6-configure-central-resource-manager-if-selected" class="section level-2">
+<h2>Step 6: Configure Central Resource Manager (If Selected)</h2>
+<p>If you selected "I want to download":</p>
+
+<table>
+<tr><th>Field</th><th>Description</th><th>Example</th></tr><tr><td>Enter seed value</td><td>Numeric encryption seed</td><td>••••</td></tr><tr><td>Re-enter seed value</td><td>Confirm seed</td><td>••••</td></tr><tr><td>Enter address</td><td>IP/Hostname/FQDN</td><td>mydomain.com</td></tr>
+</table>
+
+<p>Important: Document your seed value securely - needed for BIOS password recovery.</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image010.png" alt="Configure Central Resource Manager (If Selected)" loading="lazy"><figcaption>Configure Central Resource Manager (If Selected)</figcaption></figure>
+</p>
+</section>
+
+<section id="step-7-proxy-configuration-optional" class="section level-2">
+<h2>Step 7: Proxy Configuration (Optional)</h2>
+<p>Configure proxy settings if your organization uses a proxy server.</p>
+
+<p>Expandable sections:</p>
+
+<ul>
+<li>Dell SupportAssist for Business PCs</li>
+<li>Central Resource Manager</li>
+</ul>
+
+<p>Note: Skip this step if your organization doesn't use a proxy.</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image012.png" alt="Proxy Configuration (Optional)" loading="lazy"><figcaption>Proxy Configuration (Optional)</figcaption></figure>
+</p>
+</section>
+
+<section id="step-8-output-select-file-format" class="section level-2">
+<h2>Step 8: Output - Select File Format</h2>
+<p>Choose the deployment package format:</p>
+
+<table>
+<tr><th>Option</th><th>Use Case</th></tr><tr><td>○ Windows Installer Setup Transform (MST)</td><td>Recommended for Intune</td></tr><tr><td>○ Administrative Template Files (ADMX/ADML)</td><td>Group Policy deployment</td></tr>
+</table>
+
+<p>For Microsoft Intune deployment, select: Windows Installer Setup Transform (MST)</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image014.png" alt="Output - Select File Format" loading="lazy"><figcaption>Output - Select File Format</figcaption></figure>
+</p>
+</section>
+
+<section id="step-9-output-select-save-location" class="section level-2">
+<h2>Step 9: Output - Select Save Location</h2>
+<ol>
+<li>Click <strong>Browse</strong> to choose save location</li>
+<li>Select or create a folder</li>
+<li>Click Generate output</li>
+</ol>
+
+<p>
+<figure class="screenshot"><img src="index_files/image016.png" alt="Output - Select Save Location" loading="lazy"><figcaption>Output - Select Save Location</figcaption></figure>
+</p>
+</section>
+
+<section id="step-10-package-generation-progress" class="section level-2">
+<h2>Step 10: Package Generation Progress</h2>
+<p>The wizard downloads and prepares all components:</p>
+
+<table>
+<tr><th>Component</th><th>Version</th><th>Size</th><th>Status</th></tr><tr><td>Hardware Diagnostics Cab (x64)</td><td>4.9.2.48875</td><td>121.54 MB</td><td>Completed</td></tr><tr><td>PC Insights Cab (x64)</td><td>4.9.2.48875</td><td>17.19 MB</td><td>Completed</td></tr><tr><td>Self Healing Remediation Cab (x64)</td><td>4.9.2.48875</td><td>18.42 MB</td><td>Completed</td></tr><tr><td>Central Resource Manager</td><td>4.9.0.40923</td><td>33.88 MB</td><td>Completed</td></tr>
+</table>
+
+
+</section>
+
+<section id="step-11-summary-package-generated" class="section level-2">
+<h2>Step 11: Summary - Package Generated</h2>
+<p>"Your SupportAssist deployment package was successfully generated."</p>
+
+<p>Actions:</p>
+
+<ul>
+<li>Click <strong>View</strong> to open output folder</li>
+<li>Click <strong>Finish</strong> to close wizard</li>
+</ul>
+
+<p>
+<figure class="screenshot"><img src="index_files/image018.png" alt="Summary - Package Generated" loading="lazy"><figcaption>Summary - Package Generated</figcaption></figure>
+</p>
+</section>
+
+<section id="step-12-verify-generated-package-contents" class="section level-2">
+<h2>Step 12: Verify Generated Package Contents</h2>
+<p>Navigate to your output folder and verify all files:</p>
+
+<table>
+<tr><th>File Name</th><th>Type</th><th>Size</th></tr><tr><td>BASE.cab</td><td>Cabinet File</td><td>18,492 KB</td></tr><tr><td>CORE.cab</td><td>Cabinet File</td><td>13,953 KB</td></tr><tr><td>FULL.cab</td><td>Cabinet File</td><td>147,834 KB</td></tr><tr><td>HWDIAGS.cab</td><td>Cabinet File</td><td>124,453 KB</td></tr><tr><td>INSIGHTS.cab</td><td>Cabinet File</td><td>17,608 KB</td></tr><tr><td>RAAS.cab</td><td>Cabinet File</td><td>18,867 KB</td></tr><tr><td>SupportAssistCentralResourceManager.msi</td><td>Windows Installer</td><td>34,695 KB</td></tr><tr><td>SupportAssistConfiguration.mst</td><td>MST File</td><td>20 KB</td></tr><tr><td>SupportAssistInstaller-x64.msi</td><td>Windows Installer</td><td>18,777 KB</td></tr><tr><td>windowsdesktop-runtime-8.0.19-win-x64.exe</td><td>Application</td><td>57,111 KB</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image020.png" alt="Verify Generated Package Contents" loading="lazy"><figcaption>Verify Generated Package Contents</figcaption></figure>
+</p>
+</section>
+
+<section id="7-part-b-deploy-net-8-0-runtime-standalone" class="section level-1">
+<h1>7. Part B: Deploy .NET 8.0 Runtime (Standalone)</h1>
+<p>Prerequisite: Microsoft .NET 8.0 Desktop Runtime</p>
+
+<p>⚠️ Important: .NET 8.0 must be deployed as a separate Win32 app BEFORE deploying SupportAssist.</p>
+</section>
+
+<section id="step-13-prepare-net-8-0-source-files" class="section level-2">
+<h2>Step 13: Prepare .NET 8.0 Source Files</h2>
+<pre><code># Create .NET 8.0 directory structure
+New-Item -Path "E:\IntuneApps\DotNet8\Source" -ItemType Directory -Force
+New-Item -Path "E:\IntuneApps\DotNet8\Output" -ItemType Directory -Force
+
+# Copy .NET installer from generated SupportAssist package
+Copy-Item "...\X64\windowsdesktop-runtime-8.0.19-win-x64.exe" -Destination "E:\IntuneApps\DotNet8\Source\"</code></pre>
+</section>
+
+<section id="step-14-package-net-8-0-for-intune" class="section level-2">
+<h2>Step 14: Package .NET 8.0 for Intune</h2>
+<pre><code>cd E:\IntuneApps
+IntuneWinAppUtil.exe -c "E:\IntuneApps\DotNet8\Source" -s "windowsdesktop-runtime-8.0.19-win-x64.exe" -o "E:\IntuneApps\DotNet8\Output" -q</code></pre>
+<p>Expected: windowsdesktop-runtime-8.0.19-win-x64.intunewin (~55-60 MB)</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image022.png" alt="Package .NET 8.0 for Intune" loading="lazy"><figcaption>Package .NET 8.0 for Intune</figcaption></figure>
+</p>
+</section>
+
+<section id="step-15-upload-net-8-0-to-intune" class="section level-2">
+<h2>Step 15: Upload .NET 8.0 to Intune</h2>
+<ol>
+<li>Navigate to https://intune.microsoft.com</li>
+<li>Go to: Apps → All apps → + Add</li>
+<li>Select: Windows app (Win32)</li>
+<li>Upload: windowsdesktop-runtime-8.0.19-win-x64.intunewin</li>
+</ol>
+
+<p>
+<figure class="screenshot"><img src="index_files/image024.png" alt="Upload .NET 8.0 to Intune" loading="lazy"><figcaption>Upload .NET 8.0 to Intune</figcaption></figure>
+</p>
+</section>
+
+<section id="step-16-configure-net-8-0-app-information" class="section level-2">
+<h2>Step 16: Configure .NET 8.0 App Information</h2>
+<table>
+<tr><th>Field</th><th>Value</th></tr><tr><td>Name</td><td>Microsoft .NET 8.0 Desktop Runtime (x64)</td></tr><tr><td>Description</td><td>Microsoft .NET 8.0 Desktop Runtime required for Dell SupportAssist</td></tr><tr><td>Publisher</td><td>Microsoft Corporation</td></tr><tr><td>App Version</td><td>8.0.19</td></tr><tr><td>Category</td><td>Computer Management</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image026.png" alt="Configure .NET 8.0 App Information" loading="lazy"><figcaption>Configure .NET 8.0 App Information</figcaption></figure>
+</p>
+</section>
+
+<section id="step-17-configure-net-8-0-program-settings" class="section level-2">
+<h2>Step 17: Configure .NET 8.0 Program Settings</h2>
+<table>
+<tr><th>Setting</th><th>Value</th></tr><tr><td>Install Command</td><td>windowsdesktop-runtime-8.0.19-win-x64.exe /install /quiet /norestart</td></tr><tr><td>Uninstall Command</td><td>windowsdesktop-runtime-8.0.19-win-x64.exe /uninstall /quiet /norestart</td></tr><tr><td>Install behavior</td><td>System</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image028.png" alt="Configure .NET 8.0 Program Settings" loading="lazy"><figcaption>Configure .NET 8.0 Program Settings</figcaption></figure>
+</p>
+</section>
+
+<section id="step-18-configure-net-8-0-requirements" class="section level-2">
+<h2>Step 18: Configure .NET 8.0 Requirements</h2>
+<table>
+<tr><th>Setting</th><th>Value</th></tr><tr><td>OS Architecture</td><td>64-bit</td></tr><tr><td>Minimum OS</td><td>Windows 10 1809</td></tr><tr><td>Disk Space</td><td>200 MB</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image030.png" alt="Configure .NET 8.0 Requirements" loading="lazy"><figcaption>Configure .NET 8.0 Requirements</figcaption></figure>
+</p>
+</section>
+
+<section id="step-19-configure-net-8-0-detection-rules" class="section level-2">
+<h2>Step 19: Configure .NET 8.0 Detection Rules</h2>
+<table>
+<tr><th>Setting</th><th>Value</th></tr><tr><td>Rule type</td><td>MSI</td></tr><tr><td>MSI Product Code</td><td>B9F7A454-0CCD-410C-A3E0-D1AAC300F150</td></tr><tr><td>MSI Product Version Check</td><td>NO</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image032.png" alt="Configure .NET 8.0 Detection Rules" loading="lazy"><figcaption>Configure .NET 8.0 Detection Rules</figcaption></figure>
+</p>
+</section>
+
+<section id="step-20-configure-net-8-0-assignments" class="section level-2">
+<h2>Step 20: Configure .NET 8.0 Assignments</h2>
+<ol>
+<li>Under <strong>Required</strong>, click <strong>+ Add group</strong></li>
+<li>Select: All Devices or your device group</li>
+<li>End user notifications: Hide all toast notifications</li>
+</ol>
+
+<p>Note: Deploy .NET 8.0 to ALL devices (not just Dell) as it's a common prerequisite.</p>
+
+<p>
+<figure class="screenshot"><img src="index_files/image034.png" alt="Configure .NET 8.0 Assignments" loading="lazy"><figcaption>Configure .NET 8.0 Assignments</figcaption></figure>
+</p>
+</section>
+
+<section id="step-21-verify-net-8-0-deployment" class="section level-2">
+<h2>Step 21: Verify .NET 8.0 Deployment</h2>
+<p>Monitor deployment and verify installation:</p>
+
+<p># Check if .NET 8.0 is installed dotnet --list-runtimes | Select-String "Microsoft.WindowsDesktop.App 8.0"</p>
+</section>
+
+<section id="8-part-c-prepare-supportassist-files-for-intune" class="section level-1">
+<h1>8. Part C: Prepare SupportAssist Files for Intune</h1>
+<p>Creating the .intunewin Package</p>
+</section>
+
+<section id="step-22-create-working-directory" class="section level-2">
+<h2>Step 22: Create Working Directory</h2>
+<pre><code>$basePath = "E:\IntuneApps\SupportAssist"
+$folders = @("Source", "Output", "Scripts", "Logs")
+
+foreach ($folder in $folders) {
+    $path = Join-Path $basePath $folder
+    New-Item -Path $path -ItemType Directory -Force
+}</code></pre>
+<figure class="screenshot"><img src="index_files/image036.png" alt="Create Working Directory" loading="lazy"><figcaption>Create Working Directory</figcaption></figure>
+</section>
+
+<section id="step-23-copy-required-files" class="section level-2">
+<h2>Step 23: Copy Required Files</h2>
+<pre><code>$sourcePath = "...\SupportAssist\X64"
+$destPath = "E:\IntuneApps\SupportAssist\Source"
+
+$files = @(
+    "SupportAssistInstaller-x64.msi",
+    "SupportAssistConfiguration.mst",
+    "BASE.cab",
+    "CORE.cab",
+    "FULL.cab",
+    "HWDIAGS.cab",
+    "INSIGHTS.cab",
+    "RAAS.cab"
+)
+
+foreach ($file in $files) {
+    Copy-Item "$sourcePath\$file" -Destination $destPath -Force
+}</code></pre>
+</section>
+
+<section id="step-24-download-intunewinapputil" class="section level-2">
+<h2>Step 24: Download IntuneWinAppUtil</h2>
+<pre><code>$url = "https://github.com/Microsoft/Microsoft-Win32-Content-Prep-Tool/raw/master/IntuneWinAppUtil.exe"
+$output = "E:\IntuneApps\IntuneWinAppUtil.exe"
+Invoke-WebRequest -Uri $url -OutFile $output</code></pre>
+<figure class="screenshot"><img src="index_files/image038.png" alt="Download IntuneWinAppUtil" loading="lazy"><figcaption>Download IntuneWinAppUtil</figcaption></figure>
+</section>
+
+<section id="step-25-create-intunewin-package" class="section level-2">
+<h2>Step 25: Create .intunewin Package</h2>
+<pre><code>cd C:\IntuneApps
+IntuneWinAppUtil.exe -c "E:\IntuneApps\SupportAssist\Source" -s "SupportAssistInstaller-x64.msi" -o "E:\IntuneApps\SupportAssist\Output" -q</code></pre>
+<p>Expected: SupportAssistInstaller-x64.intunewin (~300-500 MB)</p>
+<figure class="screenshot"><img src="index_files/image040.png" alt="Create .intunewin Package" loading="lazy"><figcaption>Create .intunewin Package</figcaption></figure>
+</section>
+
+<section id="9-part-d-configure-supportassist-in-microsoft-intune" class="section level-1">
+<h1>9. Part D: Configure SupportAssist in Microsoft Intune</h1>
+<p>Win32 App Deployment</p>
+</section>
+
+<section id="step-26-access-intune-admin-center" class="section level-2">
+<h2>Step 26: Access Intune Admin Center</h2>
+<ol>
+<li>Open browser and navigate to: https://intune.microsoft.com</li>
+<li>Sign in with administrator credentials</li>
+</ol>
+
+<p>
+<figure class="screenshot"><img src="index_files/image042.png" alt="Access Intune Admin Center" loading="lazy"><figcaption>Access Intune Admin Center</figcaption></figure>
+</p>
+</section>
+
+<section id="step-27-navigate-to-apps" class="section level-2">
+<h2>Step 27: Navigate to Apps</h2>
+<ol>
+<li>Click <strong>Apps</strong> in left navigation</li>
+<li>Click All apps</li>
+<li>Click + Add</li>
+</ol>
+
+<p>
+<figure class="screenshot"><img src="index_files/image044.png" alt="Navigate to Apps" loading="lazy"><figcaption>Navigate to Apps</figcaption></figure>
+</p>
+</section>
+
+<section id="step-28-select-app-type" class="section level-2">
+<h2>Step 28: Select App Type</h2>
+<ol>
+<li>In "Select app type" panel</li>
+<li>Select Windows app (Win32)</li>
+<li>Click <strong>Select</strong></li>
+</ol>
+
+<p>
+<figure class="screenshot"><img src="index_files/image046.png" alt="Select App Type" loading="lazy"><figcaption>Select App Type</figcaption></figure>
+</p>
+</section>
+
+<section id="step-29-upload-application-package" class="section level-2">
+<h2>Step 29: Upload Application Package</h2>
+<ol>
+<li>Click Select app package file</li>
+<li>Browse to: C:\IntuneApps\SupportAssist\Output\</li>
+<li>Select: SupportAssistInstaller-x64.intunewin</li>
+<li>Ok</li>
+</ol>
+
+<p>
+<figure class="screenshot"><img src="index_files/image048.png" alt="Upload Application Package" loading="lazy"><figcaption>Upload Application Package</figcaption></figure>
+</p>
+</section>
+
+<section id="step-30-configure-app-information" class="section level-2">
+<h2>Step 30: Configure App Information</h2>
+<table>
+<tr><th>Field</th><th>Value</th></tr><tr><td>Name</td><td>Dell SupportAssist for Business PCs</td></tr><tr><td>Description</td><td>Dell SupportAssist provides proactive support for Dell business devices.</td></tr><tr><td>Publisher</td><td>Dell Inc.</td></tr><tr><td>App Version</td><td>4.9.2.48875</td></tr><tr><td>Category</td><td>Computer Management</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image050.png" alt="Configure App Information" loading="lazy"><figcaption>Configure App Information</figcaption></figure>
+</p>
+</section>
+
+<section id="step-31-configure-program-settings-critical" class="section level-2">
+<h2>Step 31: Configure Program Settings (CRITICAL)</h2>
+<p>⚠️ Install Command - Most Important Step!</p>
+</section>
+
+<section id="install-command" class="section level-3">
+<h3>Install Command:</h3>
+<pre><code>msiexec /i "SupportAssistInstaller-x64.msi" ADDLOCAL="BASE,CORE,FULL,HWDIAGS,INSIGHTS,RAAS" TRANSFORMS="SupportAssistConfiguration.mst" DEPLOYMENTKEY="XXXXXXXX" SOURCE=TechDirect /norestart /qn /l+ "%TEMP%\SupportAssist_Install.log"</code></pre>
+</section>
+
+<section id="uninstall-command" class="section level-3">
+<h3>Uninstall Command:</h3>
+<pre><code>msiexec /x "{F883F4A3-B6A9-40E8-907E-40B91097982E}" /qn</code></pre>
+<figure class="screenshot"><img src="index_files/image052.png" alt="Configure Program Settings (CRITICAL)" loading="lazy"><figcaption>Configure Program Settings (CRITICAL)</figcaption></figure>
+</section>
+
+<section id="step-32-configure-requirements" class="section level-2">
+<h2>Step 32: Configure Requirements</h2>
+<table>
+<tr><th>Setting</th><th>Value</th></tr><tr><td>OS Architecture</td><td>64-bit</td></tr><tr><td>Minimum OS</td><td>Windows 10 1809</td></tr><tr><td>Disk Space</td><td>600 MB</td></tr>
+</table>
+
+<figure class="screenshot"><img src="index_files/image054.png" alt="Configure Requirements" loading="lazy"><figcaption>Configure Requirements</figcaption></figure>
+</section>
+
+<section id="custom-requirement-dell-devices-only" class="section level-3">
+<h3>Custom Requirement - Dell Devices Only:</h3>
+<p>Create Require-DellDevice.ps1:</p>
+<pre><code>try {
+    $manufacturer = (Get-WmiObject -Class Win32_ComputerSystem).Manufacturer
+    if ($manufacturer -like "*Dell*") {
+        Write-Output "Dell device detected"
+        exit 0
+    } else {
+        Write-Output "Not a Dell device"
+        exit 1
+    }
+} catch {
+    exit 1
+}</code></pre>
+<figure class="screenshot"><img src="index_files/image056.png" alt="Configure Requirements" loading="lazy"><figcaption>Configure Requirements</figcaption></figure>
+</section>
+
+<section id="step-33-configure-detection-rules" class="section level-2">
+<h2>Step 33: Configure Detection Rules</h2>
+<table>
+<tr><th>Setting</th><th>Value</th></tr><tr><td>Rule type</td><td>MSI</td></tr><tr><td>MSI Product code</td><td>{F883F4A3-B6A9-40E8-907E-40B91097982E}</td></tr><tr><td>MSI product version check</td><td>No</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image058.png" alt="Configure Detection Rules" loading="lazy"><figcaption>Configure Detection Rules</figcaption></figure>
+</p>
+</section>
+
+<section id="step-34-configure-dependencies" class="section level-2">
+<h2>Step 34: Configure Dependencies</h2>
+<ol>
+<li>Click + Add under Dependencies</li>
+<li>Select: Microsoft .NET 8.0 Desktop Runtime (x64)</li>
+<li>Dependency type: <strong>Detect</strong></li>
+<li>Auto-install: <strong>Yes</strong></li>
+</ol>
+
+<p>
+<figure class="screenshot"><img src="index_files/image060.png" alt="Configure Dependencies" loading="lazy"><figcaption>Configure Dependencies</figcaption></figure>
+</p>
+</section>
+
+<section id="step-35-configure-supersedence-optional" class="section level-2">
+<h2>Step 35: Configure Supersedence (Optional)</h2>
+<p>If replacing older SupportAssist version, add supersedence rule. Otherwise skip.</p>
+
+
+</section>
+
+<section id="step-36-configure-assignments" class="section level-2">
+<h2>Step 36: Configure Assignments</h2>
+<p>Pilot Deployment:</p>
+
+<ol>
+<li>Under Required, click + Add group</li>
+<li>Select pilot group (e.g., IT-Pilot-Dell-Devices)</li>
+</ol>
+
+<p>Production Rollout:</p>
+
+<table>
+<tr><th>Week</th><th>Target</th><th>Devices</th></tr><tr><td>Week 1</td><td>IT Department</td><td>10-20</td></tr><tr><td>Week 2</td><td>Department A</td><td>50</td></tr><tr><td>Week 3</td><td>Department B</td><td>100</td></tr><tr><td>Week 4+</td><td>All Dell Devices</td><td>Remaining</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image062.png" alt="Configure Assignments" loading="lazy"><figcaption>Configure Assignments</figcaption></figure>
+</p>
+</section>
+
+<section id="step-37-review-and-create" class="section level-2">
+<h2>Step 37: Review and Create</h2>
+<ol>
+<li>Review all settings</li>
+<li>Verify install command</li>
+<li>Confirm dependencies</li>
+<li>Click <strong>Create</strong></li>
+</ol>
+
+<p>
+<figure class="screenshot"><img src="index_files/image064.png" alt="Review and Create" loading="lazy"><figcaption>Review and Create</figcaption></figure>
+</p>
+</section>
+
+<section id="step-38-monitor-deployment" class="section level-2">
+<h2>Step 38: Monitor Deployment</h2>
+<ol>
+<li>Navigate to: Apps → All apps → Dell SupportAssist</li>
+<li>Click Device install status</li>
+<li>Review progress and failures</li>
+</ol>
+
+<table>
+<tr><th>Status</th><th>Description</th></tr><tr><td>Installed</td><td>Successfully installed</td></tr><tr><td>Pending</td><td>Waiting to install</td></tr><tr><td>Failed</td><td>Installation failed</td></tr><tr><td>Not applicable</td><td>Not a Dell device</td></tr>
+</table>
+
+<p>
+<figure class="screenshot"><img src="index_files/image066.png" alt="Monitor Deployment" loading="lazy"><figcaption>Monitor Deployment</figcaption></figure>
+ 
+<figure class="screenshot"><img src="index_files/image068.png" alt="Monitor Deployment" loading="lazy"><figcaption>Monitor Deployment</figcaption></figure>
+</p>
+
+<p>· Dependency type: Detect</p>
+
+<p>· Auto-install: Yes</p>
+</section>
+
+<section id="step-24-configure-assignments" class="section level-2">
+<h2>Step 24: Configure Assignments</h2>
+<p>Pilot Deployment:</p>
+
+<ol>
+<li>Under Required, click + Add group</li>
+<li>Select pilot group (e.g., IT-Pilot-Dell-Devices)</li>
+</ol>
+
+<p>Production Rollout Schedule:</p>
+
+<table>
+<tr><th>Week</th><th>Target</th><th>Devices</th></tr><tr><td>Week 1</td><td>IT Department</td><td>10-20</td></tr><tr><td>Week 2</td><td>Department A</td><td>50</td></tr><tr><td>Week 3</td><td>Department B</td><td>100</td></tr><tr><td>Week 4+</td><td>All Dell Devices</td><td>Remaining</td></tr>
+</table>
+</section>
+
+<section id="9-security-governance" class="section level-1">
+<h1>9. Security &amp; Governance</h1>
+
+</section>
+
+<section id="9-1-data-protection" class="section level-2">
+<h2>9.1 Data Protection</h2>
+<table>
+<tr><th>Aspect</th><th>Implementation</th></tr><tr><td>Activation File</td><td>Store securely; regenerate if compromised</td></tr><tr><td>CRM Seed Value</td><td>Document securely for recovery</td></tr><tr><td>Network</td><td>All communication via HTTPS/TLS</td></tr>
+</table>
+</section>
+
+<section id="10-testing-validation" class="section level-1">
+<h1>10. Testing &amp; Validation</h1>
+
+</section>
+
+<section id="verification-commands" class="section level-2">
+<h2>Verification Commands</h2>
+<pre><code># Check installation
+Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*SupportAssist*" }
+
+# Check service
+Get-Service -Name "SupportAssistAgent"
+
+# View logs
+Get-Content "$env:TEMP\SupportAssist_Install.log" -Tail 50</code></pre>
+</section>
+
+<section id="validation-checklist" class="section level-2">
+<h2>Validation Checklist</h2>
+<ul>
+<li>Installation shows success in Intune</li>
+<li>SupportAssistAgent service is running</li>
+<li>Device appears in TechDirect console</li>
+<li>Hardware diagnostics can be executed</li>
+</ul>
+</section>
+
+<section id="11-troubleshooting" class="section level-1">
+<h1>11. Troubleshooting</h1>
+
+</section>
+
+<section id="common-issues" class="section level-2">
+<h2>Common Issues</h2>
+<table>
+<tr><th>Issue</th><th>Cause</th><th>Solution</th></tr><tr><td>Error 1603</td><td>Missing .NET 8.0</td><td>Install .NET dependency first</td></tr><tr><td>"Not a Dell device"</td><td>Non-Dell hardware</td><td>Expected behavior</td></tr><tr><td>Activation invalid</td><td>Expired/corrupted file</td><td>Re-download from TechDirect</td></tr><tr><td>Service not starting</td><td>Incomplete install</td><td>Check logs; reinstall</td></tr>
+</table>
+</section>
+
+<section id="log-locations" class="section level-2">
+<h2>Log Locations</h2>
+<table>
+<tr><th>Log</th><th>Location</th></tr><tr><td>MSI Install</td><td>%TEMP%\SupportAssist_Install.log</td></tr><tr><td>Intune</td><td>%ProgramData%\Microsoft\IntuneManagementExtension\Logs\</td></tr><tr><td>SupportAssist</td><td>%ProgramData%\Dell\SupportAssist\Logs\</td></tr>
+</table>
+</section>
+
+<section id="12-quick-reference" class="section level-1">
+<h1>12. Quick Reference</h1>
+
+</section>
+
+<section id="install-command-reference" class="section level-2">
+<h2>Install Command</h2>
+<pre><code>msiexec /i "SupportAssistInstaller-x64.msi" ADDLOCAL="BASE,CORE,FULL,HWDIAGS,INSIGHTS,RAAS" TRANSFORMS="SupportAssistConfiguration.mst" /norestart /qn /l*v "%TEMP%\SupportAssistInstall.log"</code></pre>
+</section>
+
+<section id="deployment-checklist" class="section level-2">
+<h2>Deployment Checklist</h2>
+<ul>
+<li>Downloaded activation file from TechDirect</li>
+<li>Ran Dell Deployment Package Manager</li>
+<li>Validated activation file</li>
+<li>Configured Central Resource Manager (if needed)</li>
+<li>Selected MST output format</li>
+<li>Generated deployment package</li>
+<li>Verified all files in output</li>
+<li>Deployed .NET 8.0 Runtime</li>
+<li>Created .intunewin package</li>
+<li>Uploaded to Intune</li>
+<li>Configured install command</li>
+<li>Set up detection rules</li>
+<li>Added .NET 8.0 dependency</li>
+<li>Assigned to pilot group</li>
+<li>Monitored deployment</li>
+<li>Verified on test devices</li>
+<li>Expanded to production</li>
+</ul>
+</section>
+
+<section id="screenshot-reference" class="section level-2">
+<h2>Screenshot Reference</h2>
+
+</section>
+
+<section id="part-a-dell-deployment-package-manager" class="section level-3">
+<h3>Part A: Dell Deployment Package Manager</h3>
+<table>
+<tr><th>Step</th><th>Image</th><th>Description</th></tr><tr><td>2</td><td>step1-welcome.png</td><td>Welcome screen</td></tr><tr><td>3</td><td>step2-activation-invalid.png</td><td>Activation error</td></tr><tr><td>4</td><td>step3-activation-success.png</td><td>Activation success</td></tr><tr><td>5</td><td>step4-software-addons.png</td><td>Software add-ons</td></tr><tr><td>6</td><td>step5-crm-config.png</td><td>CRM configuration</td></tr><tr><td>7</td><td>step6-proxy.png</td><td>Proxy settings</td></tr><tr><td>8</td><td>step7-output-format.png</td><td>Output format</td></tr><tr><td>9</td><td>step8-output-location.png</td><td>Output location</td></tr><tr><td>10</td><td>step9-generation-progress.png</td><td>Generation progress</td></tr><tr><td>10</td><td>step10-generation-complete.png</td><td>Generation complete</td></tr><tr><td>11</td><td>step11-summary.png</td><td>Summary success</td></tr><tr><td>12</td><td>step12-package-contents.png</td><td>Generated files</td></tr>
+</table>
+</section>
+
+<section id="part-b-net-8-0-deployment" class="section level-3">
+<h3>Part B: .NET 8.0 Deployment</h3>
+<table>
+<tr><th>Step</th><th>Image</th><th>Description</th></tr><tr><td>13</td><td>dotnet-step1-source-files.png</td><td>.NET source prepared</td></tr><tr><td>14</td><td>dotnet-step2-package-created.png</td><td>.NET package created</td></tr><tr><td>15</td><td>dotnet-step3-intune-upload.png</td><td>Upload to Intune</td></tr><tr><td>16</td><td>dotnet-step4-app-information.png</td><td>App information</td></tr><tr><td>17</td><td>dotnet-step5-program-settings.png</td><td>Program settings</td></tr><tr><td>18</td><td>dotnet-step6-requirements.png</td><td>Requirements</td></tr><tr><td>19</td><td>dotnet-step7-detection-rules.png</td><td>Detection rules</td></tr><tr><td>20</td><td>dotnet-step8-assignments.png</td><td>Assignments</td></tr><tr><td>21</td><td>dotnet-step9-deployment-status.png</td><td>Deployment status</td></tr>
+</table>
+</section>
+
+<section id="part-c-d-supportassist-intune-deployment" class="section level-3">
+<h3>Part C &amp; D: SupportAssist Intune Deployment</h3>
+<table>
+<tr><th>Step</th><th>Image</th><th>Description</th></tr><tr><td>22</td><td>intune-step1-folder-structure.png</td><td>Folder structure</td></tr><tr><td>23</td><td>intune-step2-files-copied.png</td><td>Files copied</td></tr><tr><td>24</td><td>intune-step3-tool-downloaded.png</td><td>Tool downloaded</td></tr><tr><td>25</td><td>intune-step4-package-created.png</td><td>Package created</td></tr><tr><td>26</td><td>intune-step5-portal-login.png</td><td>Intune login</td></tr><tr><td>27</td><td>intune-step6-apps-navigation.png</td><td>Apps navigation</td></tr><tr><td>28</td><td>intune-step7-select-app-type.png</td><td>Select app type</td></tr><tr><td>29</td><td>intune-step8-upload-package.png</td><td>Upload package</td></tr><tr><td>29</td><td>intune-step9-upload-progress.png</td><td>Upload progress</td></tr><tr><td>30</td><td>intune-step10-app-information.png</td><td>App information</td></tr><tr><td>31</td><td>intune-step11-program-settings.png</td><td>Program settings</td></tr><tr><td>32</td><td>intune-step12-requirements.png</td><td>Requirements</td></tr><tr><td>32</td><td>intune-step13-custom-requirement.png</td><td>Dell requirement</td></tr><tr><td>33</td><td>intune-step14-detection-rules.png</td><td>Detection rules</td></tr><tr><td>34</td><td>intune-step15-dependencies.png</td><td>Dependencies</td></tr><tr><td>35</td><td>intune-step16-supersedence.png</td><td>Supersedence</td></tr><tr><td>36</td><td>intune-step17-assignments.png</td><td>Assignments</td></tr><tr><td>37</td><td>intune-step18-review.png</td><td>Review and create</td></tr><tr><td>38</td><td>intune-step19-monitor-deployment.png</td><td>Monitor deployment</td></tr><tr><td>38</td><td>intune-step20-device-status.png</td><td>Device status</td></tr>
+</table>
+</section>
+
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Dell SupportAssist Enterprise Deployment Documentation. All rights reserved.</p>
+    </footer>
+
+    <button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top">
+        ↑
+    </button>
+
+    <script>
+        // Progress bar
+        function updateProgressBar() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        // Show/hide scroll to top button
+        function updateScrollButton() {
+            const btn = document.querySelector('.scroll-top');
+            if (window.scrollY > 500) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        }
+
+        // Active TOC highlighting
+        function updateActiveTOC() {
+            const sections = document.querySelectorAll('.section');
+            const tocLinks = document.querySelectorAll('.toc a');
+            
+            let currentSection = '';
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 150) {
+                    currentSection = section.id;
+                }
+            });
+            
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Scroll event handlers
+        window.addEventListener('scroll', () => {
+            updateProgressBar();
+            updateScrollButton();
+            updateActiveTOC();
+        });
+
+        // Smooth scroll for TOC links with offset
+        document.querySelectorAll('.toc a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = link.getAttribute('href').slice(1);
+                const target = document.getElementById(targetId);
+                if (target) {
+                    e.preventDefault();
+                    const offset = 20;
+                    const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                    history.pushState(null, null, `#${targetId}`);
+                }
+            });
+        });
+
+        // Wrap code blocks and add copy buttons
+        document.querySelectorAll('pre').forEach((pre, index) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'code-wrapper';
+            pre.parentNode.insertBefore(wrapper, pre);
+            wrapper.appendChild(pre);
+            
+            // Add label
+            const code = pre.textContent;
+            let label = 'Code';
+            if (code.includes('Get-') || code.includes('$env:') || code.includes('-Name')) {
+                label = 'PowerShell';
+            } else if (code.includes('msiexec') || code.includes('cmd') || code.includes('.exe')) {
+                label = 'Command';
+            }
+            
+            const labelEl = document.createElement('span');
+            labelEl.className = 'code-label';
+            labelEl.textContent = label;
+            wrapper.appendChild(labelEl);
+            
+            // Add copy button
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.addEventListener('click', async () => {
+                try {
+                    await navigator.clipboard.writeText(pre.textContent);
+                    copyBtn.textContent = 'Copied!';
+                    copyBtn.classList.add('copied');
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy';
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    copyBtn.textContent = 'Failed';
+                    setTimeout(() => {
+                        copyBtn.textContent = 'Copy';
+                    }, 2000);
+                }
+            });
+            wrapper.appendChild(copyBtn);
+        });
+
+        // Add step badges to step sections
+        document.querySelectorAll('.section h2').forEach(h2 => {
+            const text = h2.textContent;
+            const stepMatch = text.match(/^Step\s+(\d+):\s*/i);
+            if (stepMatch) {
+                const stepNum = stepMatch[1];
+                const restOfText = text.replace(/^Step\s+\d+:\s*/i, '');
+                
+                // Clear the h2 and rebuild it
+                h2.innerHTML = '';
+                
+                const badge = document.createElement('span');
+                badge.className = 'step-badge';
+                badge.textContent = stepNum;
+                
+                h2.appendChild(badge);
+                h2.appendChild(document.createTextNode(restOfText));
+            }
+        });
+
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = lightbox.querySelector('img');
+        const lightboxClose = lightbox.querySelector('.lightbox-close');
+
+        document.querySelectorAll('.screenshot img').forEach(img => {
+            img.addEventListener('click', () => {
+                lightboxImg.src = img.src;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // Mark part sections for extra spacing
+        document.querySelectorAll('.section.level-1').forEach(section => {
+            const title = section.querySelector('h1')?.textContent || '';
+            if (title.includes('Part A') || title.includes('Part B') || title.includes('Part C') || title.includes('Part D')) {
+                section.classList.add('part-section');
+            }
+        });
+
+        // Initial calls
+        updateProgressBar();
+        updateActiveTOC();
+    </script>
+</body>
+</html>

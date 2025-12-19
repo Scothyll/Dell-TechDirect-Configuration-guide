@@ -462,6 +462,7 @@
             overflow-x: auto;
             margin: 1.5rem 0;
             max-width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
@@ -472,6 +473,7 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: var(--shadow);
+            min-width: 400px;
         }
 
         th {
@@ -480,6 +482,7 @@
             font-weight: 600;
             text-align: left;
             padding: 0.875rem 1rem;
+            white-space: nowrap;
         }
 
         th:first-child {
@@ -493,6 +496,7 @@
         td {
             padding: 0.75rem 1rem;
             border-bottom: 1px solid var(--dell-border);
+            background: white;
         }
 
         tr:last-child td {
@@ -513,6 +517,17 @@
 
         tr:hover td {
             background: #EBF5FF;
+        }
+
+        @media (max-width: 768px) {
+            table {
+                font-size: 0.8rem;
+                min-width: 300px;
+            }
+
+            th, td {
+                padding: 0.5rem 0.75rem;
+            }
         }
 
         /* Code */
@@ -1862,6 +1877,16 @@ Get-Content "$env:TEMP\SupportAssist_Install.log" -Tail 50</code></pre>
                     history.pushState(null, null, `#${targetId}`);
                 }
             });
+        });
+
+        // Wrap tables in scrollable container for mobile
+        document.querySelectorAll('table').forEach(table => {
+            if (!table.parentElement.classList.contains('table-wrapper')) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-wrapper';
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            }
         });
 
         // Wrap code blocks and add copy buttons
